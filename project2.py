@@ -5,13 +5,14 @@ email: martinakova.anetta@gmail.com
 discord: Anetta M.#5044 (or originally known as zrzavahlava#5044)
 """
 
+import string
 import random
 import time
 
-print(f"Hi there\n"
+print("Hi there\n"
       f"{47 * '-'}\n"
-      f"I've generated a random 4 digit number for you.\n"
-      f"Let's play a bulls and cows game.\n"
+      "I've generated a random 4 digit number for you.\n"
+      "Let's play a bulls and cows game.\n"
       f"{47 * '-'}")
 
 
@@ -22,12 +23,17 @@ def generate_secret_number() -> str:
     :return:
         str: 4 digits number as a string
     :example:
-    >>> len(generate_secret_number())
-    4
+    >>> secret_number = generate_secret_number()
+    >>> len(secret_number) == 4
+    True
+    >>> secret_number.isdigit()
+    True
+    >>> secret_number.startswith('0')
+    False
     """
     while True:
-        secret_number = ''.join(random.sample('0123456789', 4))
-        if secret_number[0] != '0':
+        secret_number = ''.join(random.sample(string.digits, 4))
+        if not secret_number.startswith('0'):
             return secret_number
 
 
@@ -45,14 +51,16 @@ def validate_user_guess(secret_number: str, number_from_user: str) -> str:
     :example:
     >>> validate_user_guess('1234', '5678')
     '0 bulls, 0 cows'
-    >>> validate_user_guess('1234', '1223')
+    >>> validate_user_guess('1234', '1223')ß
     'Please use unique numbers only.'
     >>> validate_user_guess('1234', '122x')
     'Please use digits only.'
     >>> validate_user_guess('1234', '123')
     'Your number must have 4 digits!'
+    >>> validate_user_guess('1234', '0123')
+    'Number cannot start with zero!'
     """
-    if number_from_user[0] == '0':
+    if number_from_user.startswith('0'):
         return "Number cannot start with zero!"
     if len(number_from_user) != 4:
         return "Your number must have 4 digits!"
@@ -61,8 +69,8 @@ def validate_user_guess(secret_number: str, number_from_user: str) -> str:
     if len(set(number_from_user)) != 4:
         return "Please use unique numbers only."
     bulls = sum(1 for i in range(4) if secret_number[i] == number_from_user[i])
-    cows = sum(1 for digit in number_from_user if digit in secret_number) - bulls
-    return f"{bulls} {'bull' if bulls == 1 else 'bulls'}, {cows} {'cow' if cows == 1 else 'cows'}"
+    cows = len(set(secret_number).intersection(number_from_user)) - bulls
+    return f"{bulls} bull{'' if bulls == 1 else 's'}, {cows} cow{'' if cows == 1 else 's'}"
 
 
 secret_number = generate_secret_number()
@@ -70,7 +78,7 @@ start_time = time.time()
 attempts = 0
 
 while True:
-    number_from_user = input(f"Enter a number:\n"
+    number_from_user = input("Enter a number:\n"
                              f"{'-' * 47}\n")
     attempts += 1
     result = validate_user_guess(secret_number, number_from_user)
