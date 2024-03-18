@@ -51,7 +51,7 @@ def validate_user_guess(secret_number: str, number_from_user: str) -> str:
     :example:
     >>> validate_user_guess('1234', '5678')
     '0 bulls, 0 cows'
-    >>> validate_user_guess('1234', '1223')ß
+    >>> validate_user_guess('1234', '1223')
     'Please use unique numbers only.'
     >>> validate_user_guess('1234', '122x')
     'Please use digits only.'
